@@ -30,6 +30,19 @@ def extract_entities(text):
     entities = [(ent.text, ent.label_) for ent in doc.ents]
     return entities
 
+def print_entities(entities):
+    for entity in entities:
+        # We get entity[0] because it's a tuple
+        search = search_wiki(entity[0])
+        if len(search["search"]) > 0:
+            entity_id = get_entity_id(search)
+            entity_url = get_entity_url(entity_id)
+
+            print_string = f"Entity: {entity[0]}\nEntity ID: {entity_id}\nEntity URL: {entity_url}\n"
+            print(print_string)
+        else:
+            print(f"No entity found for {entity[0]}\n")
+
 if TEST_START:
     sample_text = "Mike Tomlin: Steelers ‘accept responsibility’ for role in brawl with Browns"
 
@@ -39,13 +52,27 @@ if TEST_START:
     # Print entities
     print(str(entities)+"\n")
 
-    # Sample searches
-    for entity in entities:
-        # We get entity[0] because it's a tuple
-        search = search_wiki(entity[0])
-        entity_id = get_entity_id(search)
-        entity_url = get_entity_url(entity_id)
+    # Print entities with ID and URL
+    print_entities(entities)
 
-        print_string = f"Entity: {entity[0]}\nEntity ID: {entity_id}\nEntity URL: {entity_url}\n"
-        print(print_string)
+# Loop to let user type a title or term to search
+running = True
+while running:
+    search_term = input("(type q to exit) Enter a title or term to search: ")
+    if search_term == "q":
+        running = False
+        break
 
+    entities = extract_entities(search_term)
+    if len(entities) > 0:
+        print(f"Entities found: {str(entities)}\n")
+
+        # Print entities with ID and URL
+        print_entities(entities)
+    else:
+        print("No entities found.\n")
+
+    # Ask if user wants to search again
+    search_again = input("Search again? (y/n): ")
+    if search_again == "n":
+        running = False
