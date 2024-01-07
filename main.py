@@ -5,19 +5,7 @@ the format the MIND dataset is in.
 
 import spacy
 import requests
-
-# Load spaCy model
-nlp = spacy.load("en_core_web_sm")
-
-sample_text = "Mike Tomlin: Steelers ‘accept responsibility’ for role in brawl with Browns"
-
-doc = nlp(sample_text)
-
-# Extract entities
-entities = [(ent.text, ent.label_) for ent in doc.ents]
-
-# Print entities
-print(str(entities)+"\n")
+TEST_START = True
 
 def search_wiki(search_term):
     """ Search for entities with the label "search_term" """
@@ -33,12 +21,31 @@ def get_entity_url(entity_id):
     """ Get the URL of the entity """
     return f"https://www.wikidata.org/wiki/{entity_id}"
 
-# Sample searches
-for entity in entities:
-    # We get entity[0] because it's a tuple
-    search = search_wiki(entity[0])
-    entity_id = get_entity_id(search)
-    entity_url = get_entity_url(entity_id)
+# Load spaCy model
+nlp = spacy.load("en_core_web_sm")
 
-    print_string = f"Entity: {entity[0]}\nEntity ID: {entity_id}\nEntity URL: {entity_url}\n"
-    print(print_string)
+def extract_entities(text):
+    """ Extract entities from text """
+    doc = nlp(text)
+    entities = [(ent.text, ent.label_) for ent in doc.ents]
+    return entities
+
+if TEST_START:
+    sample_text = "Mike Tomlin: Steelers ‘accept responsibility’ for role in brawl with Browns"
+
+    # Extract entities
+    entities = extract_entities(sample_text)
+
+    # Print entities
+    print(str(entities)+"\n")
+
+    # Sample searches
+    for entity in entities:
+        # We get entity[0] because it's a tuple
+        search = search_wiki(entity[0])
+        entity_id = get_entity_id(search)
+        entity_url = get_entity_url(entity_id)
+
+        print_string = f"Entity: {entity[0]}\nEntity ID: {entity_id}\nEntity URL: {entity_url}\n"
+        print(print_string)
+
