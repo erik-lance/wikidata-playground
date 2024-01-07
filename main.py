@@ -3,9 +3,8 @@ includes learning the entities behind the title and abstract of a news article b
 the format the MIND dataset is in.
 """
 
-import wikidata
-import pandas as pd
 import spacy
+import requests
 
 # Load spaCy model
 nlp = spacy.load("en_core_web_sm")
@@ -18,9 +17,7 @@ doc = nlp(sample_text)
 entities = [(ent.text, ent.label_) for ent in doc.ents]
 
 # Print entities
-print(entities)
-
-import requests
+print(str(entities)+"\n")
 
 def search_wiki(search_term):
     """ Search for entities with the label "search_term" """
